@@ -43,9 +43,27 @@ function(input, output) {
   
   dataset_temp_filtered <- reactive({
     dataset_temp_posixct <- dataset_temp_posixct()
-    dataset_temp_filtered <- dplyr::filter(dataset_temp_posixct, date_only >= '2018-06-02' & date_only <= '2018-06-05')
+    dataset_temp_filtered <- dplyr::filter(dataset_temp_posixct, date_only >= input$date_range[1] & date_only <= paste(as.character(input$date_range[2]), "23:45")) %>% 
+      select(-date_only) %>% 
+      gather(position, temp, temp_lower:temp_upper)
   })
   
+  ggplot_final <- reactive({
+    ggplot(data = dataset_temp_filtered(), aes(y = temp, x = date_parsed)) +
+      geom_line(aes(color = position), size = 2) +
+      scale_color_viridis_d() + # color in the case of discrete values    
+      scale_x_datetime(date_breaks = "1 day") +
+      labs(title = input$plot_title, subtitle = "average", x = "date", y = "temperature [°C]") +
+      #geom_hline(yintercept = 22.39062, color = "#440154") +
+      #geom_hline(yintercept = 22.40365, color = "#29788E") +
+      #geom_hline(yintercept = 22.39714, color = "#FDE724") +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  })
+  
+  output$contents5 <- renderPlot({
+    ggplot_final()
+  })
   output$contents1 <- renderTable({
     head(dataset_temp_filtered(), 5)
   })
@@ -53,10 +71,10 @@ function(input, output) {
     tail(dataset_temp_filtered(), 5)
   })
   output$contents3 <- renderText({
-    paste(as.character(input$start_date))
+    paste(as.character(input$date_range[1]))
   })
   output$contents4 <- renderText({
-    paste(as.character(input$end_date))
+    paste(as.character(input$date_range[2]))
   })
   output$download_plot <- downloadHandler(
     filename = function() {
