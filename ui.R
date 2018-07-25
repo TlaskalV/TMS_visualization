@@ -9,7 +9,7 @@ library(Rmisc)
 fluidPage(
   theme = shinytheme("sandstone"),
   title = "Temperature probes",
-  #plotOutput('plot'),
+  plotOutput("contents5") %>% withSpinner(type = getOption("spinner.type", default = 4)),
   tableOutput("contents1") %>% withSpinner(type = getOption("spinner.type", default = 4)),
   tableOutput("contents2") %>% withSpinner(type = getOption("spinner.type", default = 4)),
   textOutput("contents3"),
@@ -22,22 +22,18 @@ fluidPage(
            fileInput('csv_data', 
                      'Upload csv file',
                      accept = c('sheetName', 'header'), 
-                     multiple = FALSE)
+                     multiple = FALSE),
+           textInput("plot_title", 'Write plot title',
+                     placeholder = "probe serial no. 93164188")
     ),
     column(4, 
            h4("2."),
            offset = 1,
-           dateInput('start_date',
-                     label = "Choose starting date",
-                     value = as.character(Sys.Date()-1),
-                     format = "dd.mm.yy",
-                     startview = 'month', language = 'en', weekstart = 1
-           ),
-           dateInput('end_date',
-                     label = "Choose ending date",
-                     value = as.character(Sys.Date()),
-                     format = "dd.mm.yy",
-                     startview = 'month', language = 'en', weekstart = 1
+           dateRangeInput('date_range',
+                          label = 'Filter by date',
+                          start = Sys.Date() - 3, end = Sys.Date() + 3,
+                          separator = " to ", format = "yy/mm/dd",
+                          startview = 'month', language = 'en', weekstart = 1
            )
     ),
     column(4,
