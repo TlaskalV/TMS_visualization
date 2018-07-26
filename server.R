@@ -63,46 +63,97 @@ function(input, output) {
     temp_lower <- temp[[1,3]]
   })
   
+  moisture_average <- reactive({
+    moist <- filter(dataset_temp_filtered(), position == "temp_lower") %>% 
+      summarySE(measurevar = "moisture", groupvars = "position", conf.interval = 0.95)
+    moist_aver <- moist[[1,3]]
+  })
+  
+  sensor <- renderText({
+    input$sensor
+  })
+  
   ggplot_final <- reactive({
     dataset_temp_filtered <- dataset_temp_filtered()
     dataset_temp_filtered$position <- factor(dataset_temp_filtered$position, levels = c("temp_upper", "temp_middle", "temp_lower"))
     temp_average_upper <- temp_average_upper()
     temp_average_middle <- temp_average_middle()
     temp_average_lower <- temp_average_lower()
+    moisture_average <- moisture_average()
+    sensor <- sensor()
+    if(input$plot_type == "temperature"){
       ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
-      {if (input$upper == TRUE) 
+      {if (sensor == "upper") {
         geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper"))   
-      } +
-      {if (input$middle == TRUE) 
+      } else {}} +
+      {if (sensor == "middle") {
         geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_middle"))   
-      } +
-      {if (input$lower == TRUE) 
+      } else {}} +
+      {if (sensor == "lower") {
         geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower"))   
-      } +
+      } else {}} +
+      {if (sensor == "upper middle") {
+        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle"))
+      } else {}} +
+      {if (sensor == "middle lower") {
+        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_middle" | position == "temp_lower"))   
+      } else {}} +
+      {if (sensor == "upper lower") {
+        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_lower"))
+      } else {}} +
+      {if (sensor == "upper middle lower") {
+        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle" | position == "temp_lower"))
+      } else {}} +
       scale_color_viridis_d() + # color in the case of discrete values    
       scale_x_datetime(date_breaks = "1 day") +
       labs(title = input$plot_title, subtitle = paste("mean upper sensor - ", round(temp_average_upper, digits = 1), "°C\n", "mean middle sensor - ", round(temp_average_middle, digits = 1), "°C\n", "mean lower sensor - ", round(temp_average_lower, digits = 1), "°C\n"), x = "date", y = "temperature [°C]") +
-      {if (input$upper == TRUE & input$average == TRUE)
-        geom_hline(yintercept = temp_average_upper, size = 1) 
-      } +
-      {if (input$upper == TRUE & input$average == TRUE)
-        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_upper + 0.01, label = "upper sensor", size = 2)
-      } +
-      {if (input$middle == TRUE & input$average == TRUE)
-        geom_hline(yintercept = temp_average_middle, size = 1) 
-      } +
-      {if (input$middle == TRUE & input$average == TRUE)
-          annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_middle + 0.01, label = "middle sensor", size = 2) 
-      } +
-      {if (input$lower == TRUE & input$average == TRUE)
-        geom_hline(yintercept = temp_average_lower, size = 1) 
-      } +
-      {if (input$lower == TRUE & input$average == TRUE)
-        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_lower + 0.01, label = "lower sensor", size = 2) 
-      } +
+#      {if (input$sensor == "upper" & input$average == TRUE)
+#        geom_hline(yintercept = temp_average_upper, size = 1) 
+#      } +
+#      {if (input$sensor == "upper" & input$average == TRUE)
+#       annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_upper + 0.01, label = "upper sensor", size = 2)
+#      } +
+#      {if (input$sensor == "middle" & input$average == TRUE)
+#        geom_hline(yintercept = temp_average_middle, size = 1) 
+#      } +
+#      {if (input$sensor == "middle" & input$average == TRUE)
+#          annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_middle + 0.01, label = "middle sensor", size = 2) 
+#      } +
+#      {if (input$sensor == "lower" & input$average == TRUE)
+#       geom_hline(yintercept = temp_average_lower, size = 1) 
+#         } +
+#     {if (input$sensor == "lower" & input$average == TRUE)
+#        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_lower + 0.01, label = "lower sensor", size = 2) 
+#      } +
       theme_bw() +
       theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  } else {
+    ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
+      geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower")) +
+      scale_color_viridis_d() + # color in the case of discrete values    
+      scale_x_datetime(date_breaks = "1 day") +
+      labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
+    theme_bw() +
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+  }
   })
+  
+  output$ui <- renderUI({
+    if (is.null(input$plot_type))
+      return()
+    
+    switch(input$plot_type,
+           "moisture" = checkboxInput("moisture", "Moisture data",
+                                      value = TRUE),
+           "temperature" = checkboxGroupInput("sensor", "Sensor",
+                                                choices = c('Upper sensor' = 'upper',
+                                                            'Middle sensor' = 'middle',
+                                                            'Lower sensor' = 'lower'),
+                                                selected = "lower"
+           )
+    )
+  })
+  
   
   output$contents5 <- renderPlot({
     ggplot_final()
@@ -111,26 +162,25 @@ function(input, output) {
     head(temp_average_upper(), 5)
   })
   output$contents6 <- renderTable({
-    head(temp_average_middle(), 5)
+    head(moisture_average(), 5)
   })
   output$contents7 <- renderTable({
-    head(temp_average_lower(), 5)
+    head(dataset_temp_filtered(), 5)
   })
   output$contents2 <- renderTable({
     tail(dataset_temp_filtered(), 5)
   })
   output$contents3 <- renderText({
-    paste(as.character(input$date_range[1]))
+    sensor()
   })
   output$contents4 <- renderText({
     paste(as.character(input$date_range[2]))
   })
   output$download_plot <- downloadHandler(
-    filename = function() {
-      paste(input$otu, ".csv", sep = "")
-    },
+    filename = function() { paste(input$dataset, '.pdf', sep='') },
     content = function(file) {
-      write.csv(dataset_temp_filtered(), file, row.names = FALSE, sep = ";")
-    })
+      ggsave(file, plot = ggplot_final(), device = "pdf", dpi = 300, height = 210, width = 297, units = "mm")
+    }
+  )
   
 }
