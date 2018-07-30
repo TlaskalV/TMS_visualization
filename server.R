@@ -105,7 +105,18 @@ function(input, output) {
         geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle" | position == "temp_lower"))
       } else {}} +
       scale_color_viridis_d() + # color in the case of discrete values    
-      scale_x_datetime(date_breaks = "1 day") +
+      {if (input$x_scale == "day") {
+        scale_x_datetime(date_breaks = "1 day")
+      } else {}} +
+      {if (input$x_scale == "week") {
+        scale_x_datetime(date_breaks = "1 week")
+      } else {}} +
+      {if (input$x_scale == "month") {
+        scale_x_datetime(date_breaks = "1 month")
+      } else {}} +
+      {if (input$x_scale == "year") {
+        scale_x_datetime(date_breaks = "1 year")
+      } else {}} +
       labs(title = input$plot_title, subtitle = paste("mean upper sensor - ", round(temp_average_upper, digits = 1), "°C\n", "mean middle sensor - ", round(temp_average_middle, digits = 1), "°C\n", "mean lower sensor - ", round(temp_average_lower, digits = 1), "°C\n"), x = "date", y = "temperature [°C]") +
 #      {if (input$sensor == "upper" & input$average == TRUE)
 #        geom_hline(yintercept = temp_average_upper, size = 1) 
@@ -131,7 +142,18 @@ function(input, output) {
     ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
       geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower")) +
       scale_color_viridis_d() + # color in the case of discrete values    
-      scale_x_datetime(date_breaks = "1 day") +
+      {if (input$x_scale == "day") {
+        scale_x_datetime(date_breaks = "1 day")
+      } else {}} +
+      {if (input$x_scale == "week") {
+        scale_x_datetime(date_breaks = "1 week")
+      } else {}} +
+      {if (input$x_scale == "month") {
+        scale_x_datetime(date_breaks = "1 month")
+      } else {}} +
+      {if (input$x_scale == "year") {
+        scale_x_datetime(date_breaks = "1 year")
+      } else {}} +
       labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
     theme_bw() +
       theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
@@ -171,7 +193,7 @@ function(input, output) {
     tail(dataset_temp_filtered(), 5)
   })
   output$contents3 <- renderText({
-    sensor()
+    x_scale()
   })
   output$contents4 <- renderText({
     paste(as.character(input$date_range[2]))
