@@ -15,26 +15,25 @@ function(input, output) {
     if (is.null(infile))
       return(NULL)
     
-    #read.csv2(infile$datapath, header = FALSE, sep = ";", dec = ".", )
-    readr::read_delim(infile$datapath, delim = ";", escape_double = FALSE, col_names = FALSE, na = "blank", trim_ws = TRUE)
+    read.csv2(infile$datapath, header = FALSE, sep = ";", dec = ".")
   })
   
   dataset_temp_header <- reactive({
     dataset_temp <- dataset_temp()
-    dataset_temp_header_ready <- dplyr::rename(dataset_temp, "measure_index" = X1) %>% 
-      dplyr::rename("date" = X2) %>% 
-      dplyr::rename("time_zone" = X3) %>% 
-      dplyr::rename("temp_lower" = X4) %>% 
-      dplyr::rename("temp_middle" = X5) %>% 
-      dplyr::rename("temp_upper" = X6) %>% 
-      dplyr::rename("moisture" = X7) %>% 
-      dplyr::rename("shake" = X8) %>% 
-      dplyr::rename("errflag" = X9)
+    dataset_temp_header_ready <- dplyr::rename(dataset_temp, "measure_index" = V1) %>% 
+      dplyr::rename("date" = V2) %>% 
+      dplyr::rename("time_zone" = V3) %>% 
+      dplyr::rename("temp_lower" = V4) %>% 
+      dplyr::rename("temp_middle" = V5) %>% 
+      dplyr::rename("temp_upper" = V6) %>% 
+      dplyr::rename("moisture" = V7) %>% 
+      dplyr::rename("shake" = V8) %>% 
+      dplyr::rename("errflag" = V9)
   })
   
   dataset_temp_parsed <- reactive({
     dataset_temp_header <- dataset_temp_header()
-    dataset_temp_parsed <- mutate(dataset_temp_header, date_parsed = lubridate::parse_date_time(dataset_temp_header$date, "%d/%m/%Y %H:%M"))
+    dataset_temp_parsed <- mutate(dataset_temp_header, date_parsed = lubridate::parse_date_time(dataset_temp_header$date, "ymd HM"))
   })
   
   dataset_temp_posixct <- reactive({
