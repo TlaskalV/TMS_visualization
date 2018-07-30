@@ -156,11 +156,11 @@ function(input, output) {
 #        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_lower + 0.01, label = "lower sensor", size = 2) 
 #      } +
       theme_bw() +
-        theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
+        theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
   } else {
     ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
       geom_line(aes(colour = position), size = 1.5, alpha = 1, subset(dataset_temp_filtered, position == "temp_lower")) +
-      scale_color_viridis_d() + # color in the case of discrete values    
+      scale_color_viridis_d(labels = "moisture") + # color in the case of discrete values    
       {if (input$x_scale == "day") {
         scale_x_datetime(date_breaks = "1 day")
       } else {}} +
@@ -175,7 +175,7 @@ function(input, output) {
       } else {}} +
       labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
     theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
   }
   })
   
