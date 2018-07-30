@@ -9,13 +9,7 @@ library(Rmisc)
 fluidPage(
   theme = shinytheme("sandstone"),
   title = "Temperature probes",
-  plotOutput("contents5") %>% withSpinner(type = getOption("spinner.type", default = 4)),
-  tableOutput("contents1") %>% withSpinner(type = getOption("spinner.type", default = 4)),
-  tableOutput("contents2") %>% withSpinner(type = getOption("spinner.type", default = 4)),
-  tableOutput("contents6") %>% withSpinner(type = getOption("spinner.type", default = 4)),
-  tableOutput("contents7") %>% withSpinner(type = getOption("spinner.type", default = 4)),
-  textOutput("contents3"),
-  textOutput("contents4"),
+  plotOutput("contents1") %>% withSpinner(type = getOption("spinner.type", default = 4)),
   hr(),
   fluidRow(
     column(3,
@@ -30,7 +24,7 @@ fluidPage(
            h4("2."),
            offset = 1,
            textInput("plot_title", 'Write plot title',
-                     placeholder = "probe serial no. 93164188"),
+                     placeholder = "e.g. probe serial no. 93164188"),
            dateRangeInput('date_range',
                           label = 'Filter by date',
                           start = Sys.Date() - 3, end = Sys.Date() + 3,
