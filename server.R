@@ -103,25 +103,25 @@ function(input, output) {
     if(input$plot_type == "temperature"){
       ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
       {if (sensor == "upper") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper"))   
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_upper"))   
       } else {}} +
       {if (sensor == "middle") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_middle"))   
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_middle"))   
       } else {}} +
       {if (sensor == "lower") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower"))   
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_lower"))   
       } else {}} +
       {if (sensor == "upper middle") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle"))
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle"))
       } else {}} +
       {if (sensor == "middle lower") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_middle" | position == "temp_lower"))   
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_middle" | position == "temp_lower"))   
       } else {}} +
       {if (sensor == "upper lower") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_lower"))
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_lower"))
       } else {}} +
       {if (sensor == "upper middle lower") {
-        geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle" | position == "temp_lower"))
+        geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_upper" | position == "temp_middle" | position == "temp_lower"))
       } else {}} +
       scale_color_viridis_d() + # color in the case of discrete values    
       {if (input$x_scale == "day") {
@@ -159,7 +159,7 @@ function(input, output) {
         theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
   } else {
     ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
-      geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower")) +
+      geom_line(aes(colour = position), size = 1.5, alpha = 1, subset(dataset_temp_filtered, position == "temp_lower")) +
       scale_color_viridis_d() + # color in the case of discrete values    
       {if (input$x_scale == "day") {
         scale_x_datetime(date_breaks = "1 day")
