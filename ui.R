@@ -36,7 +36,11 @@ fluidPage(
                           start = Sys.Date() - 3, end = Sys.Date() + 3,
                           separator = " to ", format = "yy/mm/dd",
                           startview = 'month', language = 'en', weekstart = 1
-           )
+           ),
+           radioButtons("x_scale", "Label X axis by:", 
+                        c("day", "week", "month", "year"), 
+                        inline = TRUE,
+                        selected = "day")
     ),
     column(4,
            h4("3."),
