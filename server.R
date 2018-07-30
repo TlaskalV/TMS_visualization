@@ -15,6 +15,7 @@ function(input, output) {
     if (is.null(infile))
       return(NULL)
     
+    #read.csv2(infile$datapath, header = FALSE, sep = ";", dec = ".", )
     readr::read_delim(infile$datapath, delim = ";", escape_double = FALSE, col_names = FALSE, na = "blank", trim_ws = TRUE)
   })
   
@@ -126,7 +127,7 @@ function(input, output) {
 #        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_lower + 0.01, label = "lower sensor", size = 2) 
 #      } +
       theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+        theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
   } else {
     ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
       geom_line(aes(colour = position), size = 2, subset(dataset_temp_filtered, position == "temp_lower")) +
@@ -134,7 +135,7 @@ function(input, output) {
       scale_x_datetime(date_breaks = "1 day") +
       labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
     theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.justification = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"))
   }
   })
   
