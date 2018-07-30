@@ -3,6 +3,7 @@ library(shinythemes)
 library(readr)
 library(tidyverse)
 library(Rmisc)
+library(tools)
 
 function(input, output) {
   
@@ -16,6 +17,14 @@ function(input, output) {
       return(NULL)
     
     read.csv2(infile$datapath, header = FALSE, sep = ";", dec = ".")
+  })
+
+# get name of uploaded file
+  file_name <- reactive({
+    inFile <- input$csv_data
+    
+    if (is.null(inFile))
+      return(NULL) else return (tools::file_path_sans_ext(inFile$name))
   })
   
 # add column names to table  
@@ -193,7 +202,12 @@ function(input, output) {
     ggplot_final()
   })
   output$download_plot <- downloadHandler(
-    filename = function() { paste(input$dataset, '.pdf', sep='') },
+    filename = function() {
+      if (input$plot_type == "temperature")
+        paste(file_name(), "_temperature.pdf", sep="")
+      else 
+        paste(file_name(), "_moisture.pdf", sep="")
+      },
     content = function(file) {
       ggsave(file, plot = ggplot_final(), device = "pdf", dpi = 300, height = 210, width = 297, units = "mm")
     }
