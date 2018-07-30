@@ -9,12 +9,12 @@ library(tools)
 
 fluidPage(
   theme = shinytheme("sandstone"),
-  title = "Temperature probes",
+  title = "Temperature dataloggers",
   plotOutput("contents1") %>% withSpinner(type = getOption("spinner.type", default = 4)),
   hr(),
   fluidRow(
     column(3,
-           h3("Temperature probes"),
+           h3("Temperature dataloggers"),
            h4("1."),
            fileInput('csv_data', 
                      'Upload csv file',
