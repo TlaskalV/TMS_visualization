@@ -18,6 +18,7 @@ function(input, output) {
     read.csv2(infile$datapath, header = FALSE, sep = ";", dec = ".")
   })
   
+# add column names to table  
   dataset_temp_header <- reactive({
     dataset_temp <- dataset_temp()
     dataset_temp_header_ready <- dplyr::rename(dataset_temp, "measure_index" = V1) %>% 
@@ -31,16 +32,19 @@ function(input, output) {
       dplyr::rename("errflag" = V9)
   })
   
+# recognize date 
   dataset_temp_parsed <- reactive({
     dataset_temp_header <- dataset_temp_header()
     dataset_temp_parsed <- mutate(dataset_temp_header, date_parsed = lubridate::parse_date_time(dataset_temp_header$date, "ymd HM"))
   })
   
+# make column date_only for filtering, as.POSIXct is important  
   dataset_temp_posixct <- reactive({
     dataset_temp_parsed <- dataset_temp_parsed()
     dataset_temp_header_posixct <- mutate(dataset_temp_parsed, date_only = base::as.POSIXct(lubridate::as_date(dataset_temp_parsed$date_parsed, tz = "UTC"), tz = "UTC"))
   })
   
+# date filtering  
   dataset_temp_filtered <- reactive({
     dataset_temp_posixct <- dataset_temp_posixct()
     dataset_temp_filtered <- dplyr::filter(dataset_temp_posixct, date_only >= input$date_range[1] & date_only <= paste(as.character(input$date_range[2]), "23:45")) %>% 
@@ -48,31 +52,37 @@ function(input, output) {
       gather(position, temp, temp_lower:temp_upper)
   })
   
+# average temperature upper  
   temp_average_upper <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95)
     temp_upper <- temp[[3,3]]
   })
-  
+
+# average temperature middle  
   temp_average_middle <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95)
     temp_middle <- temp[[2,3]]
   })
   
+# average temperature upper  
   temp_average_lower <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95) 
     temp_lower <- temp[[1,3]]
   })
   
+# average moisture
   moisture_average <- reactive({
     moist <- filter(dataset_temp_filtered(), position == "temp_lower") %>% 
       summarySE(measurevar = "moisture", groupvars = "position", conf.interval = 0.95)
     moist_aver <- moist[[1,3]]
   })
   
+# sensor option  
   sensor <- renderText({
     input$sensor
   })
   
+# ggplot  
   ggplot_final <- reactive({
     dataset_temp_filtered <- dataset_temp_filtered()
     dataset_temp_filtered$position <- factor(dataset_temp_filtered$position, levels = c("temp_upper", "temp_middle", "temp_lower"))
@@ -160,6 +170,7 @@ function(input, output) {
   }
   })
   
+# switching between temperature and moisture plots  
   output$ui <- renderUI({
     if (is.null(input$plot_type))
       return()
@@ -177,26 +188,9 @@ function(input, output) {
   })
   
   
-  output$contents5 <- renderPlot({
+# rendering  
+  output$contents1 <- renderPlot({
     ggplot_final()
-  })
-  output$contents1 <- renderTable({
-    head(temp_average_upper(), 5)
-  })
-  output$contents6 <- renderTable({
-    head(moisture_average(), 5)
-  })
-  output$contents7 <- renderTable({
-    head(dataset_temp_filtered(), 5)
-  })
-  output$contents2 <- renderTable({
-    tail(dataset_temp_filtered(), 5)
-  })
-  output$contents3 <- renderText({
-    x_scale()
-  })
-  output$contents4 <- renderText({
-    paste(as.character(input$date_range[2]))
   })
   output$download_plot <- downloadHandler(
     filename = function() { paste(input$dataset, '.pdf', sep='') },
