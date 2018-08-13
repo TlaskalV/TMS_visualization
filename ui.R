@@ -35,7 +35,7 @@ fluidPage(
            radioButtons("x_scale", "Label X axis by:", 
                         c("day", "week", "month", "year"), 
                         inline = TRUE,
-                        selected = "day")
+                        selected = "week")
     ),
     column(4,
            h4("3."),
