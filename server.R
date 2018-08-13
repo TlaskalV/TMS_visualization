@@ -4,6 +4,8 @@ library(readr)
 library(tidyverse)
 library(Rmisc)
 library(tools)
+library(gridExtra)
+library(grid)
 
 function(input, output) {
   
@@ -58,32 +60,31 @@ function(input, output) {
     dataset_temp_posixct <- dataset_temp_posixct()
     dataset_temp_filtered <- dplyr::filter(dataset_temp_posixct, date_only >= input$date_range[1] & date_only <= paste(as.character(input$date_range[2]), "23:45")) %>% 
       select(-date_only) %>% 
-      gather(position, temp, temp_lower:temp_upper)
+      gather(position, temp, temp_lower:temp_upper, moisture) 
   })
   
 # average temperature upper  
   temp_average_upper <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95)
-    temp_upper <- temp[[3,3]]
+    temp_upper <- temp[[4,3]]
   })
 
 # average temperature middle  
   temp_average_middle <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95)
-    temp_middle <- temp[[2,3]]
+    temp_middle <- temp[[3,3]]
   })
   
 # average temperature upper  
   temp_average_lower <- reactive({
     temp <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95) 
-    temp_lower <- temp[[1,3]]
+    temp_lower <- temp[[2,3]]
   })
   
 # average moisture
   moisture_average <- reactive({
-    moist <- filter(dataset_temp_filtered(), position == "temp_lower") %>% 
-      summarySE(measurevar = "moisture", groupvars = "position", conf.interval = 0.95)
-    moist_aver <- moist[[1,3]]
+    moist <- summarySE(dataset_temp_filtered(), measurevar = "temp", groupvars = "position", conf.interval = 0.95) 
+    moist_mean <- moist[[1,3]]
   })
   
 # sensor option  
@@ -94,7 +95,7 @@ function(input, output) {
 # ggplot  
   ggplot_final <- reactive({
     dataset_temp_filtered <- dataset_temp_filtered()
-    dataset_temp_filtered$position <- factor(dataset_temp_filtered$position, levels = c("temp_upper", "temp_middle", "temp_lower"))
+    dataset_temp_filtered$position <- factor(dataset_temp_filtered$position, levels = c("temp_upper", "temp_middle", "temp_lower", "moisture"))
     temp_average_upper <- temp_average_upper()
     temp_average_middle <- temp_average_middle()
     temp_average_lower <- temp_average_lower()
@@ -157,9 +158,9 @@ function(input, output) {
 #      } +
       theme_bw() +
         theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
-  } else {
-    ggplot(data = dataset_temp_filtered, aes(y = moisture, x = date_parsed)) +
-      geom_line(aes(colour = position), size = 1.5, alpha = 1, subset(dataset_temp_filtered, position == "temp_lower")) +
+  } else if (input$plot_type == "moisture"){
+    ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
+      geom_line(aes(colour = position), size = 1.5, alpha = 1, subset(dataset_temp_filtered, position == "moisture")) +
       scale_color_viridis_d(labels = "moisture") + # color in the case of discrete values    
       {if (input$x_scale == "day") {
         scale_x_datetime(date_breaks = "1 day")
@@ -176,6 +177,44 @@ function(input, output) {
       labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
     theme_bw() +
       theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+  } else {
+    temp_plot <- ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
+      geom_line(aes(colour = position), size = 1.5, alpha = 0.75, subset(dataset_temp_filtered, position == "temp_lower" | position == "temp_upper" | position == "temp_middle")) +
+      scale_color_viridis_d() + # color in the case of discrete values    
+      {if (input$x_scale == "day") {
+        scale_x_datetime(date_breaks = "1 day")
+      } else {}} +
+      {if (input$x_scale == "week") {
+        scale_x_datetime(date_breaks = "1 week")
+      } else {}} +
+      {if (input$x_scale == "month") {
+        scale_x_datetime(date_breaks = "1 month")
+      } else {}} +
+      {if (input$x_scale == "year") {
+        scale_x_datetime(date_breaks = "1 year")
+      } else {}} +
+      labs(title = input$plot_title, subtitle = paste("mean upper sensor - ", round(temp_average_upper, digits = 1), "°C\n", "mean middle sensor - ", round(temp_average_middle, digits = 1), "°C\n", "mean lower sensor - ", round(temp_average_lower, digits = 1), "°C\n"), x = "date", y = "temperature [°C]") +
+    theme_bw() +
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+    moist_plot <- ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
+      geom_line(aes(colour = position), size = 1.5, alpha = 1, subset(dataset_temp_filtered, position == "moisture")) +
+      scale_color_viridis_d(labels = "moisture") + # color in the case of discrete values    
+      {if (input$x_scale == "day") {
+        scale_x_datetime(date_breaks = "1 day")
+      } else {}} +
+      {if (input$x_scale == "week") {
+        scale_x_datetime(date_breaks = "1 week")
+      } else {}} +
+      {if (input$x_scale == "month") {
+        scale_x_datetime(date_breaks = "1 month")
+      } else {}} +
+      {if (input$x_scale == "year") {
+        scale_x_datetime(date_breaks = "1 year")
+      } else {}} +
+      labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+    plots_both <- grid.arrange(temp_plot, moist_plot, ncol = 1, top = textGrob("Plot", gp = gpar(cex = 1.3, fontface = "bold", col = "black"), x = 0.08,  y = 0.55))
   }
   })
   
@@ -192,7 +231,9 @@ function(input, output) {
                                                             'Middle sensor' = 'middle',
                                                             'Lower sensor' = 'lower'),
                                                 selected = "lower"
-           )
+           ),
+           "combined" = checkboxInput("combined", "Combined data",
+                                      value = TRUE)
     )
   })
   
@@ -201,6 +242,7 @@ function(input, output) {
   output$contents1 <- renderPlot({
     ggplot_final()
   })
+  
   output$download_plot <- downloadHandler(
     filename = function() {
       if (input$plot_type == "temperature")
