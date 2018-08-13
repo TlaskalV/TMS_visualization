@@ -40,7 +40,7 @@ fluidPage(
     column(4,
            h4("3."),
            radioButtons("plot_type", "Choose data to plot", 
-                        c("temperature", "moisture"), 
+                        c("temperature", "moisture", "combined"), 
                         inline = T,
                         selected = "temperature"),
            uiOutput("ui"),
