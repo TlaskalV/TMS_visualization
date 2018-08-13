@@ -243,12 +243,17 @@ function(input, output) {
     ggplot_final()
   })
   
+  output$contents2 <- renderTable({
+    (temp_average_upper())
+  })
   output$download_plot <- downloadHandler(
     filename = function() {
       if (input$plot_type == "temperature")
         paste(file_name(), "_temperature.pdf", sep="")
-      else 
+      else if (input$plot_type == "moisture")
         paste(file_name(), "_moisture.pdf", sep="")
+      else
+        paste(file_name(), "_combined.pdf", sep="")
       },
     content = function(file) {
       ggsave(file, plot = ggplot_final(), device = "pdf", dpi = 300, height = 210, width = 297, units = "mm")
