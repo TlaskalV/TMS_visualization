@@ -19,7 +19,8 @@ fluidPage(
            fileInput('csv_data', 
                      'Upload csv file',
                      accept = c('sheetName', 'header'), 
-                     multiple = FALSE)
+                     multiple = FALSE),
+           p(a("GitHub", href = "https://github.com/Vojczech/TMS_visualization", target="_blank"))
     ),
     column(4, 
            h4("2."),
