@@ -6,7 +6,6 @@ library(Rmisc)
 library(tools)
 library(gridExtra)
 library(grid)
-library(scales)
 
 function(input, output) {
   
@@ -249,6 +248,8 @@ function(input, output) {
   output$contents2 <- renderTable({
     (temp_average_upper())
   })
+  
+# download  
   output$download_plot <- downloadHandler(
     filename = function() {
       if (input$plot_type == "temperature")
