@@ -157,7 +157,7 @@ function(input, output) {
 #        annotate("text", x = as.POSIXct(input$date_range[1] + 0.5), y = temp_average_lower + 0.01, label = "lower sensor", size = 2) 
 #      } +
       theme_bw() +
-        theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+        theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
   } else if (input$plot_type == "moisture"){
 # if moisture data are checked
     ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
@@ -177,7 +177,7 @@ function(input, output) {
       } else {}} +
       labs(title = input$plot_title, subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture") +
     theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_text(size = 14, face = "bold", colour = "black"),  plot.subtitle = element_text(colour = "black"), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
   } else {
 # if combined data are checked
     temp_plot <- ggplot(data = dataset_temp_filtered, aes(y = temp, x = date_parsed)) +
@@ -197,7 +197,7 @@ function(input, output) {
       } else {}} +
       labs(subtitle = paste("mean upper sensor - ", round(temp_average_upper, digits = 1), "°C\n", "mean middle sensor - ", round(temp_average_middle, digits = 1), "°C\n", "mean lower sensor - ", round(temp_average_lower, digits = 1), "°C\n"), x = "date", y = "temperature [°C]") +
     theme_bw() +
-      theme(axis.text.x = element_blank(), axis.text.y = element_text(size = 13, colour = "black"), axis.title.y = element_text(size = 14, face = "bold", colour = "black"), axis.title.x = element_blank(), plot.title = element_blank(),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+      theme(axis.text.x = element_blank(), axis.text.y = element_text(size = 13, colour = "black"), axis.title.y = element_text(size = 14, face = "bold", colour = "black"), axis.title.x = element_blank(), plot.title = element_blank(),  plot.subtitle = element_text(colour = "black"), panel.grid.minor = element_blank(), legend.position = "top", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_text(size = 12, colour = "black", face = "bold"), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
     moist_plot <- ggplot(data = dataset_temp_filtered, aes(y = temp/100, x = date_parsed)) +
       geom_line(aes(colour = position), size = 1, alpha = 1, subset(dataset_temp_filtered, position == "moisture")) +
       scale_color_viridis_d(labels = "moisture") + # color in the case of discrete values    
@@ -215,7 +215,7 @@ function(input, output) {
       } else {}} +
       labs(subtitle = paste("mean moisture - ", round(moisture_average, digits = 1)), x = "date", y = "moisture (*100)") +
       theme_bw() +
-      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_blank(),  plot.subtitle = element_text(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "none", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_blank(), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
+      theme(axis.text.x = element_text(angle = 90, size = 10, colour = "black"), axis.text.y = element_text(size = 13, colour = "black"), axis.title = element_text(size = 14, face = "bold", colour = "black"), plot.title = element_blank(),  plot.subtitle = element_text(colour = "black"), panel.grid.minor = element_blank(), legend.position = "none", legend.text = element_text(size = 11, colour = "black", face = "plain"), legend.title = element_blank(), legend.key.size = unit(3, 'lines'), legend.spacing.x = unit(0.3, 'cm'), legend.direction = "horizontal")
     plots_both <- grid.arrange(temp_plot, moist_plot, ncol = 1, top = textGrob(input$plot_title, gp = gpar(cex = 1.3, fontface = "bold", col = "black"), x = 0.08,  y = 0.55))
   }
   })
