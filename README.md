@@ -16,13 +16,18 @@ There is an option to plot data from different combinations of sensors.
 
 ### Combined temperature and moisture data ###
 
-<img src="/data_94174102_0_combined.png" width="600">
+<div align="left">
+    <img src="/pictures/data_94174102_0_combined.png?raw=true" width="600px"</img> 
+</div>
 
 ---
 
 ### Temperature data only ###
 
-<img src="/data_94174102_0_temperature.png" width="600">
+<div align="left">
+    <img src="/pictures/data_94174102_0_temperature.png?raw=true" width="600px"</img> 
+</div>
+
 
 ## Where to try app
 
