@@ -17,7 +17,7 @@ There is an option to plot data from different combinations of sensors.
 ### Combined temperature and moisture data ###
 
 <div align="left">
-    <img src="/pictures/data_94174102_0_combined.png?raw=true" width="600px"</img> 
+    <img src="/data_94174102_0_combined.png?raw=true" width="600px"</img> 
 </div>
 
 ---
@@ -25,7 +25,7 @@ There is an option to plot data from different combinations of sensors.
 ### Temperature data only ###
 
 <div align="left">
-    <img src="/pictures/data_94174102_0_temperature.png?raw=true" width="600px"</img> 
+    <img src="/data_94174102_0_temperature.png?raw=true" width="600px"</img> 
 </div>
 
 
