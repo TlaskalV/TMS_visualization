@@ -9,6 +9,7 @@ library(tools)
 library(showtext)
 library(hrbrthemes)
 library(patchwork)
+library(fontawesome)
 
 # download a webfont
 font_add_google(name = "Roboto Condensed", family = "Roboto Condensed",
@@ -25,10 +26,10 @@ fluidPage(
            h3("Temperature dataloggers"),
            h4("1."),
            fileInput('csv_data', 
-                     'Upload csv file',
+                     label = list(icon("table"), "Upload csv file"),
                      accept = c('sheetName', 'header'), 
                      multiple = FALSE),
-           p(a("GitHub", href = "https://github.com/Vojczech/TMS_visualization", target="_blank"))
+           p(a(list(icon("github"), "Source code"), href = "https://github.com/Vojczech/TMS_visualization", target="_blank"))
     ),
     column(4, 
            h4("2."),
@@ -36,19 +37,21 @@ fluidPage(
            textInput("plot_title", 'Write plot title',
                      placeholder = "e.g. probe serial no. 93164188"),
            dateRangeInput('date_range',
-                          label = 'Filter by date',
+                          label = list(icon("calendar-alt"), "Filter by date"),
                           start = Sys.Date() - 3, end = Sys.Date() + 3,
                           separator = " to ", format = "yy/mm/dd",
                           startview = 'month', language = 'en', weekstart = 1
            ),
-           radioButtons("x_scale", "Label X axis by:", 
+           radioButtons("x_scale", 
+                        label = "Label X axis by:", 
                         c("day", "week", "month", "year"), 
                         inline = TRUE,
                         selected = "week")
     ),
     column(4,
            h4("3."),
-           radioButtons("plot_type", "Choose data to plot", 
+           radioButtons("plot_type", 
+                        label = list(icon("thermometer-half"), icon("tint"), "Choose data to plot"), 
                         c("temperature", "moisture", "combined"), 
                         inline = T,
                         selected = "temperature"),
