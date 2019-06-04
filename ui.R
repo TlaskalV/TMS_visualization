@@ -8,6 +8,7 @@ library(Rmisc)
 library(tools)
 library(showtext)
 library(hrbrthemes)
+library(patchwork)
 
 # download a webfont
 font_add_google(name = "Roboto Condensed", family = "Roboto Condensed",
