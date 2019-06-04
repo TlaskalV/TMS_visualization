@@ -5,10 +5,9 @@ library(readr)
 library(tidyverse)
 library(Rmisc)
 library(tools)
-library(gridExtra)
-library(grid)
 library(showtext)
 library(hrbrthemes)
+library(patchwork)
 
 # download a webfont
 font_add_google(name = "Roboto Condensed", family = "Roboto Condensed",
@@ -208,8 +207,10 @@ function(input, output) {
         scale_x_datetime(date_breaks = "1 year")
       } else {}} +
       labs(subtitle = paste("mean upper sensor - ", round(temp_average_upper, digits = 1), "°C\n", "mean middle sensor - ", round(temp_average_middle, digits = 1), "°C\n", "mean lower sensor - ", round(temp_average_lower, digits = 1), "°C\n"), x = "date", y = "temperature [°C]") +
+      ggtitle(input$plot_title) +
       theme_ipsum_rc() +
-      theme(axis.text.x = element_blank(), 
+      theme(axis.text.x = element_blank(),
+            axis.title.x = element_blank(),
             legend.position = "top", 
             legend.direction = "horizontal")
     moist_plot <- ggplot(data = dataset_temp_filtered, aes(y = temp/100, x = date_parsed)) +
@@ -232,7 +233,7 @@ function(input, output) {
       theme(axis.text.x = element_text(angle = 90), 
             legend.position = "none", 
             legend.direction = "horizontal")
-    plots_both <- grid.arrange(temp_plot, moist_plot, ncol = 1, top = textGrob(input$plot_title, gp = gpar(cex = 1.3, fontface = "bold", col = "black"), x = 0.08,  y = 0.55))
+    temp_plot + moist_plot + plot_layout(ncol = 1, )
   }
   })
   
