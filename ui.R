@@ -1,3 +1,4 @@
+# load packages
 library(shiny)
 library(shinythemes)
 library(shinycssloaders)
@@ -5,7 +6,13 @@ library(readr)
 library(tidyverse)
 library(Rmisc)
 library(tools)
+library(showtext)
+library(hrbrthemes)
 
+# download a webfont
+font_add_google(name = "Roboto Condensed", family = "Roboto Condensed",
+                regular.wt = 400, bold.wt = 700)
+showtext_auto()
 
 fluidPage(
   theme = shinytheme("sandstone"),
