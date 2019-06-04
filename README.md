@@ -33,7 +33,7 @@ There is an option to plot data from different combinations of sensors. Plot use
 
 There are two options to access the app:
 * online web app hosted on [labenvmicro.shinyapps.io](https://labenvmicro.shinyapps.io/TMS_app/) 
-* or start your local installation of `r fa("r-project", fill = "steelblue")` language and paste following code which automatically downloads prerequisties and starts app:
+* or start your local installation of **R** language and paste following code which automatically downloads prerequisties and starts app:
 ```
 install.packages(c("shiny", "shinythemes", "readr", "tidyverse", "Rmisc", "tools", "devtools", "showtext", "shinycssloaders", "hrbrthemes"))
 devtools::install_github("thomasp85/patchwork")
